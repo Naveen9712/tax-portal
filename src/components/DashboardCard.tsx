@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { CSSProperties, FC, ReactNode } from 'react';
 
 export type DashboardVariant = 'admin' | 'attorney' | 'dso' | 'employer';

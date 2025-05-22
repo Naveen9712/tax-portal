@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, Calendar, DollarSign, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle } from 'lucide-react';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -22,7 +22,7 @@ interface ChatScreenProps {
   chatMessages: ChatMessage[];
   newMessage: string;
   setNewMessage: (message: string) => void;
-  setChatMessages: (messages: ChatMessage[]) => void;
+  setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 }
 
 interface TaxAppMockupProps {
@@ -156,15 +156,15 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
     if (!newMessage.trim()) return;
     
     const newId = chatMessages.length + 1;
-    setChatMessages([
-      ...chatMessages,
+    setChatMessages((prev: ChatMessage[]) => [
+      ...prev,
       { id: newId, text: newMessage, sender: 'user' }
     ]);
     setNewMessage('');
     
     // Simulate bot response
     setTimeout(() => {
-      setChatMessages(prev => [
+      setChatMessages((prev: ChatMessage[]) => [
         ...prev,
         { 
           id: prev.length + 1, 
@@ -189,7 +189,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
       
       switch(event) {
         case "New job opportunity":
-          response = "A job change could have several tax implications. If your salary increases, you may move to a higher tax bracket. You should check if your new employer's W-4 withholding is appropriate. Also, remember that unused FSA funds might be forfeited when changing jobs, so plan accordingly. Would you like me to analyze the optimal withholding for your potential new salary?";
+          response = "A job change could have several tax implications. If your salary increases, you may move to a higher tax bracket. You should check if your new employer's W-4 withholding is appropriate. Also, remember that unused FSA funds might be forfeited when changing jobs, so plan accordingly. Would you like me to help you set up a tax planning strategy for this potential income?";
           break;
         case "Planning for graduate school":
           response = "Graduate education expenses may qualify for tax benefits! The Lifetime Learning Credit could reduce your tax bill by up to $2,000 (20% of the first $10,000 in expenses). Student loan interest remains tax-deductible up to $2,500, and employer tuition assistance may be tax-free up to $5,250. Would you like me to estimate potential tax savings based on your expected education costs?";
@@ -201,7 +201,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
           response = "This life event could have tax implications. Let me analyze this further based on your specific financial situation. Would you like me to provide a detailed breakdown of potential tax impacts and strategies?";
       }
       
-      setChatMessages(prev => [
+      setChatMessages((prev: ChatMessage[]) => [
         ...prev,
         { id: prev.length + 1, text: response, sender: 'bot' }
       ]);
@@ -234,7 +234,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
           response = "This additional income source will have specific tax implications. Based on your current $95,000 salary and expenses, I can help you plan for the tax impact. Would you like me to create a tax estimate showing how this additional income might affect your tax situation?";
       }
       
-      setChatMessages(prev => [
+      setChatMessages((prev: ChatMessage[]) => [
         ...prev,
         { id: prev.length + 1, text: response, sender: 'bot' }
       ]);
@@ -620,7 +620,7 @@ const ProfileScreen: React.FC = () => (
   </div>
 );
 
-const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
+const TaxAppMockup: React.FC<TaxAppMockupProps> = () => {
   const [activeScreen, setActiveScreen] = useState('home');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { id: 1, text: "Hi Michael! I'm your personal tax assistant. How can I help you today?", sender: 'bot' },
