@@ -39,10 +39,20 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isActive, onClick }) => 
   </div>
 );
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ setActiveScreen }) => (
+const HomeScreen: React.FC<HomeScreenProps & { onBack?: () => void }> = ({ setActiveScreen, onBack }) => (
   <div className="p-4 md:p-6 mx-auto">
     <div className="flex justify-between items-center mb-6">
-      <h1 className="text-2xl md:text-3xl font-bold">Tax AI</h1>
+      <div className="flex items-center">
+        {onBack && (
+          <button 
+            onClick={onBack}
+            className="mr-3 p-1 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <ChevronRight size={20} className="rotate-180 text-gray-600" />
+          </button>
+        )}
+        <h1 className="text-2xl md:text-3xl font-bold whitespace-nowrap">Tax AI</h1>
+      </div>
       <div className="bg-blue-600 text-white p-2 rounded-full">
         <User size={20} />
       </div>
@@ -620,7 +630,7 @@ const ProfileScreen: React.FC = () => (
   </div>
 );
 
-const TaxAppMockup: React.FC<TaxAppMockupProps> = () => {
+const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
   const [activeScreen, setActiveScreen] = useState('home');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { id: 1, text: "Hi Michael! I'm your personal tax assistant. How can I help you today?", sender: 'bot' },
@@ -632,7 +642,7 @@ const TaxAppMockup: React.FC<TaxAppMockupProps> = () => {
   const renderScreen = () => {
     switch(activeScreen) {
       case 'home':
-        return <HomeScreen setActiveScreen={setActiveScreen} />;
+        return <HomeScreen setActiveScreen={setActiveScreen} onBack={onBack} />;
       case 'chat':
         return <ChatScreen 
           chatMessages={chatMessages} 
