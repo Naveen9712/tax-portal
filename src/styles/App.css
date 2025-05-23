@@ -90,6 +90,9 @@ header p {
 .card:hover::before {
     opacity: 1;
 }
+.card button{
+    padding: 8px;;
+}
 
 /* Card variants with enhanced colors */
 .admin {
@@ -118,10 +121,10 @@ header p {
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-    padding: 1rem;
+    padding: 9px;
     border-radius: 0.75rem;
     margin-right: 1rem;
-    font-size: 1.75rem;
+    font-size: 21px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
 }
@@ -130,8 +133,8 @@ header p {
 .card h2 {
     display: flex;
     align-items: center;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 21px;
+    font-weight: 600;
     color: rgb(17, 24, 39);
     margin-bottom: 1rem;
     letter-spacing: -0.025em;
@@ -147,7 +150,7 @@ header p {
 
 /* Enhanced features section */
 .features {
-    margin-top: 2rem;
+    margin: 1rem 0;
     background: rgba(255, 255, 255, 0.6);
     padding: 1.5rem;
     border-radius: 0.75rem;
@@ -175,7 +178,7 @@ header p {
     display: flex;
     align-items: center;
     font-weight: 500;
-    padding: 0.5rem 0;
+    padding: 3px 0;
 }
 
 .features li::before {
