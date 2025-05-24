@@ -333,7 +333,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
             />
             <button 
               onClick={handleSendMessage}
-              className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 w-10 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
             >
               <MessageCircle size={20} />
             </button>
@@ -365,7 +365,7 @@ const DocumentsScreen: React.FC = () => (
   <div className="p-4 md:p-6 mx-auto">
     <div className="flex justify-between items-center mb-6">
       <h1 className="text-xl md:text-2xl font-bold">Tax Documents</h1>
-      <button className="bg-blue-600 text-white p-2 md:p-3 rounded-full hover:bg-blue-700 transition-colors">
+      <button className="bg-blue-600 text-white p-2 w-[43px] md:p-3 rounded-full hover:bg-blue-700 transition-colors">
         <Plus size={20} />
       </button>
     </div>
@@ -447,7 +447,7 @@ const LifeEventsScreen: React.FC = () => (
   <div className="p-4 md:p-6  mx-auto">
     <div className="flex justify-between items-center mb-6">
       <h1 className="text-xl md:text-2xl font-bold">Life Events</h1>
-      <button className="bg-blue-600 text-white p-2 md:p-3 rounded-full hover:bg-blue-700 transition-colors">
+      <button className="bg-blue-600 text-white p-2 w-[43px] md:p-3 rounded-full hover:bg-blue-700 transition-colors">
         <Plus size={20} />
       </button>
     </div>
