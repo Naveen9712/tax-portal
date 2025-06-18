@@ -44,32 +44,6 @@ const dashboards: Dashboard[] = [
     variant: 'attorney',
     alert: 'Accessing Personal Tax AI - Your personal tax assistant',
   },
-  {
-    icon: '🎓',
-    title: 'DSO Dashboard',
-    description: 'Streamlined student records and SEVIS compliance management',
-    features: [
-      'Student Record Management',
-      'SEVIS Reporting & Compliance',
-      'Document Processing',
-      'Regulatory Updates',
-    ],
-    variant: 'dso',
-    alert: 'Accessing DSO Dashboard - Manage student records and SEVIS reporting',
-  },
-  {
-    icon: '🏢',
-    title: 'Employer Dashboard',
-    description: 'Complete visa process and immigrant employee compliance solution',
-    features: [
-      'Visa Status Tracking',
-      'Compliance Monitoring',
-      'Employee Immigration Records',
-      'Automated Task Reminders',
-    ],
-    variant: 'employer',
-    alert: 'Accessing Employer Dashboard - Manage visa processes',
-  },
 ];
 
 const DashboardSelectionPage: React.FC<DashboardSelectionPageProps> = ({ 
@@ -101,7 +75,7 @@ const DashboardSelectionPage: React.FC<DashboardSelectionPageProps> = ({
             Choose a dashboard to access specialized tools and features tailored for your needs
           </p>
         </header>
-        
+       
         <div className="dashboard-grid mx-auto">
           {dashboards.map((dashboard) => (
             <DashboardCard
