@@ -1,5 +1,184 @@
 import React, { useState } from 'react';
-import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle } from 'lucide-react';
+import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle, Calendar, Bell, PlayCircle } from 'lucide-react';
+
+// Tax Planning Journey Component
+const TaxPlanningJourney = () => {
+  const [activeStage, setActiveStage] = useState('Entry Level');
+
+  const taxJourneyStages = [
+    { id: 'entry', label: 'Entry Level', active: true },
+    { id: 'career', label: 'Career Growth', active: false },
+    { id: 'family', label: 'Family Stage', active: false },
+    { id: 'homeowner', label: 'Homeowner', active: false },
+    { id: 'maxearning', label: 'Peak Earning', active: false },
+    { id: 'preretire', label: 'Pre-Retirement', active: false },
+    { id: 'retirement', label: 'Retirement', active: false }
+  ];
+
+  const planningCategories = [
+    { name: '401(k) Setup', icon: '💼', description: 'Employer retirement plan optimization' },
+    { name: 'Roth IRA', icon: '🎯', description: 'Tax-free retirement savings' },
+    { name: 'HSA Planning', icon: '🏥', description: 'Health Savings Account strategy' },
+    { name: 'Tax Withholding', icon: '📊', description: 'Optimize paycheck deductions' },
+    { name: 'Emergency Fund', icon: '🛡️', description: 'Build tax-efficient savings' },
+    { name: 'Credit Building', icon: '📈', description: 'Build credit for tax benefits' }
+  ];
+
+  return (
+    <div className="flex flex-col h-screen bg-gray-50 max-w-sm mx-auto">
+      {/* Title and Notification */}
+      <div className="bg-white p-4 border-b border-gray-200">
+        <div className="flex justify-between items-center">
+          <h1 className="text-lg font-bold text-gray-800">Your Tax Planning Journey</h1>
+          <div className="relative">
+            <Bell size={20} className="text-gray-600" />
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="bg-white p-3 border-b border-gray-200">
+        <div className="flex space-x-2 overflow-x-auto">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-full text-xs whitespace-nowrap">
+            Tax Status
+          </button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-full text-xs whitespace-nowrap">
+            Find CPA
+          </button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-full text-xs whitespace-nowrap">
+            File Taxes
+          </button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-full text-xs whitespace-nowrap">
+            Update Profile
+          </button>
+        </div>
+      </div>
+      {/* Tax Journey Stages - Moved below Entry Level Planning */}
+      <div className="bg-white p-3 border-b border-gray-200">
+        <div className="flex justify-center">
+          <div className="flex space-x-2 overflow-x-auto">
+            {taxJourneyStages.map((stage, index) => (
+              <div key={stage.id} className="flex flex-col items-center">
+                <button
+                  onClick={() => setActiveStage(stage.label)}
+                  className={`w-14 h-14 rounded-full border-2 flex items-center justify-center text-xs font-medium text-center leading-tight ${
+                    stage.label === activeStage
+                      ? 'bg-blue-500 text-white border-blue-500'
+                      : 'bg-white text-gray-600 border-gray-300'
+                  }`}
+                >
+                  {stage.label.split(' ')[0]}
+                </button>
+                {index < taxJourneyStages.length - 1 && (
+                  <div className="w-8 h-0.5 bg-gray-300 my-2"></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Entry Level Planning Section */}
+      <div className="bg-white p-3 border-b border-gray-200">
+        <div className="mb-3" style={{display: 'flex'}}>
+        <div className="w-2 h-2 bg-blue-500 rounded-full p-3 mr-3"></div>
+          <h2 className="text-lg font-bold text-blue-500">{activeStage} Planning</h2>
+          
+        </div>
+      </div>
+
+      
+
+      {/* Main Content Area - No sidebar now */}
+      <div className="flex-1 p-3 overflow-y-auto">
+        <div className="space-y-3">
+          {planningCategories.map((category, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <div>
+                  <div className="font-medium text-gray-800 flex items-center space-x-2 text-sm">
+                    <span>{category.icon}</span>
+                    <span>{category.name}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">{category.description}</div>
+                </div>
+              </div>
+              <ChevronRight size={16} className="text-blue-500" />
+            </div>
+          ))}
+        </div>
+
+        {/* Additional Information Card */}
+        <div className="mt-4 bg-blue-50 rounded-lg p-3 border border-blue-200">
+          <h3 className="font-semibold text-blue-800 mb-2 text-sm">💡 {activeStage} Tax Tips</h3>
+          <div className="text-xs text-blue-700">
+            {activeStage === 'Entry Level' && (
+              <ul className="space-y-1">
+                <li>• Start contributing to 401(k) immediately for employer match</li>
+                <li>• Open a Roth IRA for tax-free growth</li>
+                <li>• Set up HSA if eligible for triple tax advantage</li>
+                <li>• Review tax withholdings to avoid overpaying</li>
+              </ul>
+            )}
+            {activeStage === 'Career Growth' && (
+              <ul className="space-y-1">
+                <li>• Increase 401(k) contributions with salary raises</li>
+                <li>• Consider backdoor Roth IRA if income limits apply</li>
+                <li>• Maximize HSA contributions for future medical expenses</li>
+                <li>• Start tax-loss harvesting in investment accounts</li>
+              </ul>
+            )}
+            {activeStage === 'Family Stage' && (
+              <ul className="space-y-1">
+                <li>• Claim Child Tax Credit and dependent exemptions</li>
+                <li>• Open 529 education savings plans</li>
+                <li>• Consider Dependent Care FSA for childcare</li>
+                <li>• Review life insurance for tax benefits</li>
+              </ul>
+            )}
+            {activeStage === 'Homeowner' && (
+              <ul className="space-y-1">
+                <li>• Deduct mortgage interest and property taxes</li>
+                <li>• Track home improvement costs for future sale</li>
+                <li>• Consider home equity loan interest deductions</li>
+                <li>• Maintain records for home office deductions</li>
+              </ul>
+            )}
+            {activeStage === 'Peak Earning' && (
+              <ul className="space-y-1">
+                <li>• Max out all retirement account contributions</li>
+                <li>• Consider mega backdoor Roth strategies</li>
+                <li>• Implement tax-loss harvesting strategies</li>
+                <li>• Plan for Alternative Minimum Tax (AMT)</li>
+              </ul>
+            )}
+            {activeStage === 'Pre-Retirement' && (
+              <ul className="space-y-1">
+                <li>• Plan Roth IRA conversions to manage tax brackets</li>
+                <li>• Consider catch-up contributions (50+)</li>
+                <li>• Optimize Social Security claiming strategy</li>
+                <li>• Plan required minimum distributions (RMDs)</li>
+              </ul>
+            )}
+            {activeStage === 'Retirement' && (
+              <ul className="space-y-1">
+                <li>• Manage withdrawal order to minimize taxes</li>
+                <li>• Take required minimum distributions on time</li>
+                <li>• Consider qualified charitable distributions</li>
+                <li>• Plan estate tax strategies for heirs</li>
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -47,7 +226,7 @@ const HomeScreen: React.FC<HomeScreenProps & { onBack?: () => void }> = ({ setAc
           <button 
             onClick={onBack}
             className="mr-3 p-1 hover:bg-gray-100 rounded-full transition-colors"
-            style={{ width: '2rem'}}
+            style={{width: '2rem'}}
           >
             <ChevronRight size={20} className="rotate-180 text-gray-600" />
           </button>
@@ -655,6 +834,8 @@ const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
         return <DocumentsScreen />;
       case 'events':
         return <LifeEventsScreen />;
+      case 'plan':
+        return <TaxPlanningJourney />;
       case 'profile':
         return <ProfileScreen />;
       default:
@@ -663,7 +844,8 @@ const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 w-full max-w-sm border mx-auto">
+    <div className="flex flex-col h-screen w-full max-w-sm mx-auto border"
+    style={{backgroundColor: '#fdfdfd'}}>
       {/* Main content */}
       <div className="flex-1 overflow-y-auto">
         {renderScreen()}
@@ -671,11 +853,12 @@ const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
       
       {/* Bottom navigation */}
       <div className="flex justify-around items-center p-4 bg-white border-t border-gray-200">
-        <NavItem icon={<Home size={24} />} label="Home" isActive={activeScreen === 'home'} onClick={() => setActiveScreen('home')} />
-        <NavItem icon={<MessageCircle size={24} />} label="Chat" isActive={activeScreen === 'chat'} onClick={() => setActiveScreen('chat')} />
-        <NavItem icon={<FileText size={24} />} label="Docs" isActive={activeScreen === 'documents'} onClick={() => setActiveScreen('documents')} />
-        <NavItem icon={<Gift size={24} />} label="Events" isActive={activeScreen === 'events'} onClick={() => setActiveScreen('events')} />
-        <NavItem icon={<User size={24} />} label="Profile" isActive={activeScreen === 'profile'} onClick={() => setActiveScreen('profile')} />
+        <NavItem icon={<Home size={20} />} label="Home" isActive={activeScreen === 'home'} onClick={() => setActiveScreen('home')} />
+        <NavItem icon={<MessageCircle size={20} />} label="Chat" isActive={activeScreen === 'chat'} onClick={() => setActiveScreen('chat')} />
+        <NavItem icon={<Calendar size={20} />} label="Plan" isActive={activeScreen === 'plan'} onClick={() => setActiveScreen('plan')} />
+        <NavItem icon={<FileText size={20} />} label="Docs" isActive={activeScreen === 'documents'} onClick={() => setActiveScreen('documents')} />
+        <NavItem icon={<Gift size={20} />} label="Events" isActive={activeScreen === 'events'} onClick={() => setActiveScreen('events')} />
+        <NavItem icon={<User size={20} />} label="Profile" isActive={activeScreen === 'profile'} onClick={() => setActiveScreen('profile')} />
       </div>
     </div>
   );
