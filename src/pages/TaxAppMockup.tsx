@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle, Calendar, Bell, Camera, Upload } from 'lucide-react';
+import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle, Calendar, Bell, Upload } from 'lucide-react';
 
 // Tax Planning Journey Component
 const TaxPlanningJourney = () => {
@@ -345,28 +345,72 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
     "Content creation"
   ];
 
-  // Gemini AI API call function
-  const callGeminiAI = async (message: string, imageData?: string) => {
+  // Gemini AI API call function with full conversation context
+  const callGeminiAI = async (message: string, imageData?: string, conversationHistory: ChatMessage[] = []) => {
     try {
       const apiKey = 'AIzaSyAaAVH1P5vHbjHWRFZm3rOWYTUU1FngycE'; // Placeholder API key
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
       
-      let parts: any[] = [{ text: message }];
+      // Build conversation context
+      const userProfile = `You are a helpful tax assistant helping Michael Chen, a 30-year-old single person living in Texas with an annual salary of $95,000. His monthly expenses include rent ($1,500), car payment ($500), education loan ($400), personal loan ($350), health insurance ($300), car insurance ($200), internet ($85), and mobile ($30). His tax withholdings are $1,650/month.`;
       
-      // Add image data if provided
+      // Convert conversation history to Gemini format
+      const contents: any[] = [];
+      
+      // Add system context as the first message
+      contents.push({
+        role: "user",
+        parts: [{ text: userProfile }]
+      });
+      contents.push({
+        role: "model", 
+        parts: [{ text: "I understand. I'm ready to provide personalized tax advice for Michael Chen based on his financial situation." }]
+      });
+      
+      // Add conversation history (limit to last 10 exchanges to manage context length)
+      const recentHistory = conversationHistory.slice(-20); // Last 20 messages (10 exchanges)
+      recentHistory.forEach(msg => {
+        if (msg.sender === 'user') {
+          let parts: any[] = [{ text: msg.text }];
+          // If the message has an image, add it
+          if (msg.image) {
+            parts.push({
+              inline_data: {
+                mime_type: "image/jpeg",
+                data: msg.image.split(',')[1]
+              }
+            });
+          }
+          contents.push({
+            role: "user",
+            parts: parts
+          });
+        } else {
+          contents.push({
+            role: "model",
+            parts: [{ text: msg.text }]
+          });
+        }
+      });
+      
+      // Add the current message
+      let currentParts: any[] = [{ text: message }];
       if (imageData) {
-        parts.push({
+        currentParts.push({
           inline_data: {
             mime_type: "image/jpeg",
-            data: imageData.split(',')[1] // Remove data:image/jpeg;base64, prefix
+            data: imageData.split(',')[1]
           }
         });
       }
+      
+      contents.push({
+        role: "user",
+        parts: currentParts
+      });
 
       const requestBody = {
-        contents: [{
-          parts: parts
-        }],
+        contents: contents,
         generationConfig: {
           temperature: 0.7,
           topK: 40,
@@ -400,19 +444,18 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
     
     setIsLoading(true);
     const newId = chatMessages.length + 1;
-    setChatMessages((prev: ChatMessage[]) => [
-      ...prev,
-      { id: newId, text: newMessage, sender: 'user' }
-    ]);
+    const updatedMessages = [
+      ...chatMessages,
+      { id: newId, text: newMessage, sender: 'user' as const }
+    ];
+    setChatMessages(updatedMessages);
     
     const userMessage = newMessage;
     setNewMessage('');
     
     try {
-      // Create context-aware message for Gemini AI
-      const contextMessage = `You are a helpful tax assistant helping Michael Chen, a 30-year-old single person living in Texas with an annual salary of $95,000. His monthly expenses include rent ($1,500), car payment ($500), education loan ($400), personal loan ($350), health insurance ($300), car insurance ($200), internet ($85), and mobile ($30). His tax withholdings are $1,650/month. Please provide helpful, personalized tax advice based on this context. User message: ${userMessage}`;
-      
-      const response = await callGeminiAI(contextMessage);
+      // Pass the current conversation history for context
+      const response = await callGeminiAI(userMessage, undefined, chatMessages);
       
       setChatMessages((prev: ChatMessage[]) => [
         ...prev,
@@ -437,18 +480,19 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
   };
 
   const handleLifeEventSelect = async (event: string) => {
-    setChatMessages([
+    const updatedMessages = [
       ...chatMessages,
-      { id: chatMessages.length + 1, text: `I'm considering: ${event}`, sender: 'user' }
-    ]);
+      { id: chatMessages.length + 1, text: `I'm considering: ${event}`, sender: 'user' as const }
+    ];
+    setChatMessages(updatedMessages);
     
     setShowLifeEvents(false);
     setIsLoading(true);
     
     try {
-      const contextMessage = `You are a helpful tax assistant helping Michael Chen, a 30-year-old single person living in Texas with an annual salary of $95,000. His monthly expenses include rent ($1,500), car payment ($500), education loan ($400), personal loan ($350), health insurance ($300), car insurance ($200), internet ($85), and mobile ($30). His tax withholdings are $1,650/month. The user is considering this life event: ${event}. Please provide specific, personalized tax advice for this situation, including potential deductions, credits, and strategies.`;
+      const message = `I'm considering this life event: ${event}. Please provide specific, personalized tax advice for this situation, including potential deductions, credits, and strategies.`;
       
-      const response = await callGeminiAI(contextMessage);
+      const response = await callGeminiAI(message, undefined, chatMessages);
       
       setChatMessages((prev: ChatMessage[]) => [
         ...prev,
@@ -465,18 +509,19 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
   };
 
   const handleIncomeOptionSelect = async (option: string) => {
-    setChatMessages([
+    const updatedMessages = [
       ...chatMessages,
-      { id: chatMessages.length + 1, text: `I'm planning to earn income through: ${option}`, sender: 'user' }
-    ]);
+      { id: chatMessages.length + 1, text: `I'm planning to earn income through: ${option}`, sender: 'user' as const }
+    ];
+    setChatMessages(updatedMessages);
     
     setShowIncomeOptions(false);
     setIsLoading(true);
     
     try {
-      const contextMessage = `You are a helpful tax assistant helping Michael Chen, a 30-year-old single person living in Texas with an annual salary of $95,000. His monthly expenses include rent ($1,500), car payment ($500), education loan ($400), personal loan ($350), health insurance ($300), car insurance ($200), internet ($85), and mobile ($30). His tax withholdings are $1,650/month. The user is planning to earn additional income through: ${option}. Please provide specific, personalized tax advice for this additional income source, including tax implications, estimated tax rates, deductions, and quarterly payment requirements.`;
+      const message = `I'm planning to earn additional income through: ${option}. Please provide specific, personalized tax advice for this additional income source, including tax implications, estimated tax rates, deductions, and quarterly payment requirements.`;
       
-      const response = await callGeminiAI(contextMessage);
+      const response = await callGeminiAI(message, undefined, chatMessages);
       
       setChatMessages((prev: ChatMessage[]) => [
         ...prev,
@@ -507,20 +552,21 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
       const imageData = e.target?.result as string;
       
       setIsLoading(true);
-      setChatMessages((prev: ChatMessage[]) => [
-        ...prev,
+      const updatedMessages = [
+        ...chatMessages,
         { 
-          id: prev.length + 1, 
+          id: chatMessages.length + 1, 
           text: "I've uploaded a receipt/document for analysis", 
-          sender: 'user',
+          sender: 'user' as const,
           image: imageData
         }
-      ]);
+      ];
+      setChatMessages(updatedMessages);
       
       try {
-        const contextMessage = `You are a helpful tax assistant. The user has uploaded a receipt or document image. Please analyze this image and extract relevant tax information such as business expenses, medical expenses, charitable donations, or other tax-deductible items. Provide specific advice on how this expense can be used for tax purposes, what documentation to keep, and any relevant tax forms or schedules. Also mention the amount, date, vendor, and category of expense if visible.`;
+        const message = `I've uploaded a receipt or document image. Please analyze this image and extract relevant tax information such as business expenses, medical expenses, charitable donations, or other tax-deductible items. Provide specific advice on how this expense can be used for tax purposes, what documentation to keep, and any relevant tax forms or schedules. Also mention the amount, date, vendor, and category of expense if visible.`;
         
-        const response = await callGeminiAI(contextMessage, imageData);
+        const response = await callGeminiAI(message, imageData, chatMessages);
         
         setChatMessages((prev: ChatMessage[]) => [
           ...prev,
@@ -962,7 +1008,7 @@ const ProfileScreen: React.FC = () => (
 const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
   const [activeScreen, setActiveScreen] = useState('home');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    { id: 1, text: "Hi Michael! I'm your personal tax assistant powered by Gemini AI. I can help you with tax planning, analyze receipts, and answer questions about your specific financial situation. How can I help you today?", sender: 'bot' }
+    { id: 1, text: "Hi Michael! I'm your personal tax assistant powered by Gemini AI. I can remember our entire conversation and provide contextual advice based on what we've discussed. I can help you with tax planning, analyze receipts, and answer questions about your specific financial situation. How can I help you today?", sender: 'bot' }
   ]);
   const [newMessage, setNewMessage] = useState('');
 
