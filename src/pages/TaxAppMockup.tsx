@@ -40,30 +40,31 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isActive, onClick }) => 
 );
 
 const HomeScreen: React.FC<HomeScreenProps & { onBack?: () => void }> = ({ setActiveScreen, onBack }) => (
-  <div className="p-4 md:p-6 mx-auto">
+  <div className="p-4 mx-auto max-w-sm">
     <div className="flex justify-between items-center mb-6">
       <div className="flex items-center">
         {onBack && (
           <button 
             onClick={onBack}
             className="mr-3 p-1 hover:bg-gray-100 rounded-full transition-colors"
+            style={{ width: '2rem'}}
           >
             <ChevronRight size={20} className="rotate-180 text-gray-600" />
           </button>
         )}
-        <h1 className="text-2xl md:text-3xl font-bold whitespace-nowrap">Tax AI</h1>
+        <h1 className="text-2xl font-bold">Tax AI</h1>
       </div>
       <div className="bg-blue-600 text-white p-2 rounded-full">
         <User size={20} />
       </div>
     </div>
 
-    <div className="bg-blue-600 rounded-lg p-4 md:p-6 text-white mb-6">
-      <h2 className="text-lg md:text-xl font-semibold mb-2">Next Tax Payment</h2>
+    <div className="bg-blue-600 rounded-lg p-4 text-white mb-6">
+      <h2 className="text-lg font-semibold mb-2">Next Tax Payment</h2>
       <div className="flex justify-between items-center">
         <div>
           <p className="text-sm opacity-80">Federal Income Tax</p>
-          <p className="text-2xl md:text-3xl font-bold">$1,650.00</p>
+          <p className="text-2xl font-bold">$1,650.00</p>
         </div>
         <div className="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
           Monthly Withholding
@@ -71,14 +72,14 @@ const HomeScreen: React.FC<HomeScreenProps & { onBack?: () => void }> = ({ setAc
       </div>
     </div>
     
-    <div className="bg-white rounded-lg shadow p-4 md:p-6 mb-6">
-      <h2 className="text-lg md:text-xl font-semibold mb-3">Tax Insights</h2>
+    <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <h2 className="text-lg font-semibold mb-3">Tax Insights</h2>
       
       <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg mb-3 hover:bg-blue-100 transition-colors cursor-pointer">
         <AlertCircle size={20} className="text-blue-600 flex-shrink-0" />
         <div className="flex-1">
-          <p className="text-sm md:text-base font-medium">Student Loan Interest Deduction</p>
-          <p className="text-xs md:text-sm text-gray-500">You may qualify for up to $2,500 in deductions</p>
+          <p className="text-sm font-medium">Student Loan Interest Deduction</p>
+          <p className="text-xs text-gray-500">You may qualify for up to $2,500 in deductions</p>
         </div>
         <ChevronRight size={16} className="text-gray-400 flex-shrink-0" />
       </div>
@@ -86,8 +87,8 @@ const HomeScreen: React.FC<HomeScreenProps & { onBack?: () => void }> = ({ setAc
       <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg mb-3 hover:bg-green-100 transition-colors cursor-pointer">
         <DollarSign size={20} className="text-green-600 flex-shrink-0" />
         <div className="flex-1">
-          <p className="text-sm md:text-base font-medium">Retirement Savings Credit</p>
-          <p className="text-xs md:text-sm text-gray-500">Consider opening an IRA to reduce tax liability</p>
+          <p className="text-sm font-medium">Retirement Savings Credit</p>
+          <p className="text-xs text-gray-500">Consider opening an IRA to reduce tax liability</p>
         </div>
         <ChevronRight size={16} className="text-gray-400 flex-shrink-0" />
       </div>
@@ -95,39 +96,39 @@ const HomeScreen: React.FC<HomeScreenProps & { onBack?: () => void }> = ({ setAc
       <div className="flex items-center space-x-3 p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors cursor-pointer">
         <AlertCircle size={20} className="text-yellow-600 flex-shrink-0" />
         <div className="flex-1">
-          <p className="text-sm md:text-base font-medium">Withholding Check</p>
-          <p className="text-xs md:text-sm text-gray-500">You may be withholding too little</p>
+          <p className="text-sm font-medium">Withholding Check</p>
+          <p className="text-xs text-gray-500">You may be withholding too little</p>
         </div>
         <ChevronRight size={16} className="text-gray-400 flex-shrink-0" />
       </div>
     </div>
 
-    <div className="bg-white rounded-lg shadow p-4 md:p-6 mb-6">
+    <div className="bg-white rounded-lg shadow p-4 mb-6">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg md:text-xl font-semibold">Recent Activity</h2>
+        <h2 className="text-lg font-semibold">Recent Activity</h2>
         <a href="#" className="text-blue-600 text-sm hover:text-blue-800">View All</a>
       </div>
       
       <div className="space-y-3">
         <div className="border-b border-gray-100 pb-3">
-          <p className="text-sm md:text-base font-medium">Updated salary information</p>
-          <p className="text-xs md:text-sm text-gray-500">May 10, 2025</p>
+          <p className="text-sm font-medium">Updated salary information</p>
+          <p className="text-xs text-gray-500">May 10, 2025</p>
         </div>
         
         <div className="border-b border-gray-100 pb-3">
-          <p className="text-sm md:text-base font-medium">Uploaded education loan statement</p>
-          <p className="text-xs md:text-sm text-gray-500">May 5, 2025</p>
+          <p className="text-sm font-medium">Uploaded education loan statement</p>
+          <p className="text-xs text-gray-500">May 5, 2025</p>
         </div>
         
         <div>
-          <p className="text-sm md:text-base font-medium">Added monthly expense information</p>
-          <p className="text-xs md:text-sm text-gray-500">May 1, 2025</p>
+          <p className="text-sm font-medium">Added monthly expense information</p>
+          <p className="text-xs text-gray-500">May 1, 2025</p>
         </div>
       </div>
     </div>
 
     <button 
-      className="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 md:py-4 rounded-lg font-medium flex items-center justify-center transition-colors"
+      className="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-lg font-medium flex items-center justify-center transition-colors"
       onClick={() => setActiveScreen('chat')}
     >
       <MessageCircle size={20} className="mr-2" />
@@ -252,32 +253,32 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
   };
 
   return (
-    <div className="flex flex-col h-full  mx-auto">
+    <div className="flex flex-col h-full max-w-sm mx-auto">
       <div className="bg-white p-4 shadow">
-        <h1 className="text-lg md:text-xl font-bold">Tax AI Assistant</h1>
+        <h1 className="text-lg font-bold">Tax AI Assistant</h1>
       </div>
       
       <div className="flex-1 p-4 overflow-y-auto">
-        <div className="mx-auto">
+        <div className="max-w-sm mx-auto">
           {chatMessages.map(msg => (
             <div 
               key={msg.id} 
-              className={`rounded-lg p-3 mb-3 ${
+              className={`rounded-lg p-3 mb-3 max-w-xs ${
                 msg.sender === 'user' 
                   ? 'ml-auto bg-blue-600 text-white' 
                   : 'mr-auto bg-gray-200 text-gray-800'
               }`}
             >
-              <div className="whitespace-pre-wrap">{msg.text}</div>
+              <div className="whitespace-pre-wrap text-sm">{msg.text}</div>
             </div>
           ))}
         </div>
       </div>
       
       {showLifeEvents && (
-        <div className="bg-white p-4 border-t border-gray-200 mx-auto w-full">
+        <div className="bg-white p-4 border-t border-gray-200 max-w-sm mx-auto w-full">
           <h3 className="font-medium text-sm mb-3">Select Life Event:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-2">
             {lifeEvents.map((event, index) => (
               <button 
                 key={index}
@@ -298,9 +299,9 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
       )}
       
       {showIncomeOptions && (
-        <div className="bg-white p-4 border-t border-gray-200  mx-auto w-full">
+        <div className="bg-white p-4 border-t border-gray-200 max-w-sm mx-auto w-full">
           <h3 className="font-medium text-sm mb-3">Select Potential Income Source:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-2">
             {incomeOptions.map((option, index) => (
               <button 
                 key={index}
@@ -321,7 +322,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
       )}
       
       {!showLifeEvents && !showIncomeOptions && (
-        <div className="bg-white p-4 border-t border-gray-200 mx-auto w-full">
+        <div className="bg-white p-4 border-t border-gray-200 max-w-sm mx-auto w-full">
           <div className="flex space-x-2 mb-3">
             <input
               type="text"
@@ -329,13 +330,13 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder="Message your tax assistant..."
-              className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:border-blue-400"
+              className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
             />
             <button 
               onClick={handleSendMessage}
               className="bg-blue-600 w-10 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
             >
-              <MessageCircle size={20} />
+              <MessageCircle size={18} />
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -362,10 +363,10 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
 };
 
 const DocumentsScreen: React.FC = () => (
-  <div className="p-4 md:p-6 mx-auto">
+  <div className="p-4 max-w-sm mx-auto">
     <div className="flex justify-between items-center mb-6">
-      <h1 className="text-xl md:text-2xl font-bold">Tax Documents</h1>
-      <button className="bg-blue-600 text-white p-2 w-[43px] md:p-3 rounded-full hover:bg-blue-700 transition-colors">
+      <h1 className="text-xl font-bold">Tax Documents</h1>
+      <button className="bg-blue-600 text-white p-2 w-10 rounded-full hover:bg-blue-700 transition-colors">
         <Plus size={20} />
       </button>
     </div>
@@ -376,7 +377,7 @@ const DocumentsScreen: React.FC = () => (
         <input
           type="text"
           placeholder="Search documents..."
-          className="bg-gray-100 w-full pl-10 pr-4 py-2 md:py-3 rounded-lg text-sm focus:outline-none focus:bg-white focus:border focus:border-blue-400"
+          className="bg-gray-100 w-full pl-10 pr-4 py-2 rounded-lg text-sm focus:outline-none focus:bg-white focus:border focus:border-blue-400"
         />
       </div>
     </div>
@@ -409,8 +410,8 @@ const DocumentsScreen: React.FC = () => (
                 <FileText size={20} className={`text-${doc.color}-600`} />
               </div>
               <div className="flex-1">
-                <p className="font-medium text-sm md:text-base">{doc.name}</p>
-                <p className="text-xs md:text-sm text-gray-500">{doc.date}</p>
+                <p className="font-medium text-sm">{doc.name}</p>
+                <p className="text-xs text-gray-500">{doc.date}</p>
               </div>
               <ChevronRight size={18} className="text-gray-400" />
             </div>
@@ -431,8 +432,8 @@ const DocumentsScreen: React.FC = () => (
                 <FileText size={20} className={`text-${doc.color}-600`} />
               </div>
               <div className="flex-1">
-                <p className="font-medium text-sm md:text-base">{doc.name}</p>
-                <p className="text-xs md:text-sm text-gray-500">{doc.date}</p>
+                <p className="font-medium text-sm">{doc.name}</p>
+                <p className="text-xs text-gray-500">{doc.date}</p>
               </div>
               <ChevronRight size={18} className="text-gray-400" />
             </div>
@@ -444,15 +445,15 @@ const DocumentsScreen: React.FC = () => (
 );
 
 const LifeEventsScreen: React.FC = () => (
-  <div className="p-4 md:p-6  mx-auto">
+  <div className="p-4 max-w-sm mx-auto">
     <div className="flex justify-between items-center mb-6">
-      <h1 className="text-xl md:text-2xl font-bold">Life Events</h1>
-      <button className="bg-blue-600 text-white p-2 w-[43px] md:p-3 rounded-full hover:bg-blue-700 transition-colors">
+      <h1 className="text-xl font-bold">Life Events</h1>
+      <button className="bg-blue-600 text-white p-2 w-10 rounded-full hover:bg-blue-700 transition-colors">
         <Plus size={20} />
       </button>
     </div>
     
-    <p className="text-sm md:text-base text-gray-600 mb-6">
+    <p className="text-sm text-gray-600 mb-6">
       Add important life events that may impact your taxes.
     </p>
     
@@ -460,35 +461,35 @@ const LifeEventsScreen: React.FC = () => (
       <h2 className="text-sm font-semibold text-gray-500 mb-4">UPCOMING</h2>
       
       <div className="space-y-4">
-        <div className="bg-white rounded-lg shadow p-4 md:p-6">
+        <div className="bg-white rounded-lg shadow p-4">
           <div className="flex items-center mb-3">
             <div className="bg-purple-100 p-3 rounded-full mr-4">
               <DollarSign size={20} className="text-purple-600" />
             </div>
             <div>
-              <h3 className="font-medium text-sm md:text-base">Potential Job Change</h3>
-              <p className="text-xs md:text-sm text-gray-500">Considering for August 2025</p>
+              <h3 className="font-medium text-sm">Potential Job Change</h3>
+              <p className="text-xs text-gray-500">Considering for August 2025</p>
             </div>
           </div>
           <div className="bg-purple-50 p-3 rounded text-sm">
             <p className="font-medium text-purple-800">Tax Impact:</p>
-            <p className="text-xs md:text-sm text-purple-700">New W-2, possible changes in tax brackets and withholdings. May need to adjust W-4 with new employer.</p>
+            <p className="text-xs text-purple-700">New W-2, possible changes in tax brackets and withholdings. May need to adjust W-4 with new employer.</p>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-4 md:p-6">
+        <div className="bg-white rounded-lg shadow p-4">
           <div className="flex items-center mb-3">
             <div className="bg-blue-100 p-3 rounded-full mr-4">
               <Home size={20} className="text-blue-600" />
             </div>
             <div>
-              <h3 className="font-medium text-sm md:text-base">Considering Home Purchase</h3>
-              <p className="text-xs md:text-sm text-gray-500">Researching for Q4 2025</p>
+              <h3 className="font-medium text-sm">Considering Home Purchase</h3>
+              <p className="text-xs text-gray-500">Researching for Q4 2025</p>
             </div>
           </div>
           <div className="bg-blue-50 p-3 rounded text-sm">
             <p className="font-medium text-blue-800">Tax Impact:</p>
-            <p className="text-xs md:text-sm text-blue-700">Mortgage interest and property tax deductions may be available. First-time homebuyer benefits may apply.</p>
+            <p className="text-xs text-blue-700">Mortgage interest and property tax deductions may be available. First-time homebuyer benefits may apply.</p>
           </div>
         </div>
       </div>
@@ -498,35 +499,35 @@ const LifeEventsScreen: React.FC = () => (
       <h2 className="text-sm font-semibold text-gray-500 mb-4">PAST EVENTS</h2>
       
       <div className="space-y-4">
-        <div className="bg-white rounded-lg shadow p-4 md:p-6">
+        <div className="bg-white rounded-lg shadow p-4">
           <div className="flex items-center mb-3">
             <div className="bg-green-100 p-3 rounded-full mr-4">
               <DollarSign size={20} className="text-green-600" />
             </div>
             <div>
-              <h3 className="font-medium text-sm md:text-base">Salary Increase</h3>
-              <p className="text-xs md:text-sm text-gray-500">January, 2025</p>
+              <h3 className="font-medium text-sm">Salary Increase</h3>
+              <p className="text-xs text-gray-500">January, 2025</p>
             </div>
           </div>
           <div className="bg-green-50 p-3 rounded text-sm">
             <p className="font-medium text-green-800">Tax Impact:</p>
-            <p className="text-xs md:text-sm text-green-700">Placed in higher tax bracket. Withholding amounts adjusted. Possible impact on student loan interest deduction eligibility.</p>
+            <p className="text-xs text-green-700">Placed in higher tax bracket. Withholding amounts adjusted. Possible impact on student loan interest deduction eligibility.</p>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-4 md:p-6">
+        <div className="bg-white rounded-lg shadow p-4">
           <div className="flex items-center mb-3">
             <div className="bg-gray-100 p-3 rounded-full mr-4">
               <User size={20} className="text-gray-600" />
             </div>
             <div>
-              <h3 className="font-medium text-sm md:text-base">Refinanced Education Loan</h3>
-              <p className="text-xs md:text-sm text-gray-500">November, 2024</p>
+              <h3 className="font-medium text-sm">Refinanced Education Loan</h3>
+              <p className="text-xs text-gray-500">November, 2024</p>
             </div>
           </div>
           <div className="bg-gray-50 p-3 rounded text-sm">
             <p className="font-medium text-gray-800">Tax Impact:</p>
-            <p className="text-xs md:text-sm text-gray-700">Still eligible for student loan interest deduction. New loan servicer information needed for tax forms.</p>
+            <p className="text-xs text-gray-700">Still eligible for student loan interest deduction. New loan servicer information needed for tax forms.</p>
           </div>
         </div>
       </div>
@@ -535,14 +536,14 @@ const LifeEventsScreen: React.FC = () => (
 );
 
 const ProfileScreen: React.FC = () => (
-  <div className="p-4 md:p-6 mx-auto">
+  <div className="p-4 max-w-sm mx-auto">
     <div className="flex justify-between items-center mb-6">
-      <h1 className="text-xl md:text-2xl font-bold">Your Profile</h1>
+      <h1 className="text-xl font-bold">Your Profile</h1>
       <button className="text-blue-600 text-sm font-medium hover:text-blue-800">Edit</button>
     </div>
     
-    <div className="grid md:grid-cols-2 gap-6">
-      <div className="bg-white rounded-lg shadow p-4 md:p-6">
+    <div className="space-y-6">
+      <div className="bg-white rounded-lg shadow p-4">
         <div className="flex items-center mb-4">
           <div className="bg-blue-600 text-white p-4 rounded-full mr-4">
             <User size={24} />
@@ -571,12 +572,12 @@ const ProfileScreen: React.FC = () => (
       </div>
 
       <div className="bg-white rounded-lg shadow">
-        <div className="p-4 md:p-6 border-b border-gray-100">
+        <div className="p-4 border-b border-gray-100">
           <h2 className="font-medium mb-1">Income & Expenses</h2>
           <p className="text-sm text-gray-500">Manage your financial information for tax calculations</p>
         </div>
         
-        <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center">
+        <div className="p-4 border-b border-gray-100 flex justify-between items-center">
           <div>
             <p className="font-medium">Annual Salary</p>
             <p className="text-sm text-gray-500">Private Company</p>
@@ -584,7 +585,7 @@ const ProfileScreen: React.FC = () => (
           <p className="font-medium text-lg">$95,000</p>
         </div>
         
-        <div className="p-4 md:p-6 border-b border-gray-100">
+        <div className="p-4 border-b border-gray-100">
           <p className="font-medium mb-3">Monthly Expenses</p>
           <div className="space-y-2 text-sm">
             {[
@@ -605,7 +606,7 @@ const ProfileScreen: React.FC = () => (
           </div>
         </div>
         
-        <div className="p-4 md:p-6 flex justify-between items-center">
+        <div className="p-4 flex justify-between items-center">
           <p className="font-medium">Tax Withholdings</p>
           <p className="font-medium text-lg">$1,650/month</p>
         </div>
@@ -618,12 +619,12 @@ const ProfileScreen: React.FC = () => (
         'Tax Preferences', 
         'Notification Settings'
       ].map((item) => (
-        <div key={item} className="px-4 md:px-6 py-4 border-b border-gray-100 flex justify-between items-center hover:bg-gray-50 cursor-pointer">
+        <div key={item} className="px-4 py-4 border-b border-gray-100 flex justify-between items-center hover:bg-gray-50 cursor-pointer">
           <p className="font-medium">{item}</p>
           <ChevronRight size={18} className="text-gray-400" />
         </div>
       ))}
-      <div className="px-4 md:px-6 py-4 flex justify-between items-center text-red-500 hover:bg-red-50 cursor-pointer">
+      <div className="px-4 py-4 flex justify-between items-center text-red-500 hover:bg-red-50 cursor-pointer">
         <p className="font-medium">Sign Out</p>
       </div>
     </div>
@@ -662,14 +663,14 @@ const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 w-full">
+    <div className="flex flex-col h-screen bg-gray-100 w-full max-w-md border mx-auto">
       {/* Main content */}
-      <div className="flex-1 p-4 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto">
         {renderScreen()}
       </div>
       
       {/* Bottom navigation */}
-      <div className="flex justify-around items-center p-4 bg-white border-t border-gray-200 md:justify-center md:space-x-8">
+      <div className="flex justify-around items-center p-4 bg-white border-t border-gray-200">
         <NavItem icon={<Home size={24} />} label="Home" isActive={activeScreen === 'home'} onClick={() => setActiveScreen('home')} />
         <NavItem icon={<MessageCircle size={24} />} label="Chat" isActive={activeScreen === 'chat'} onClick={() => setActiveScreen('chat')} />
         <NavItem icon={<FileText size={24} />} label="Docs" isActive={activeScreen === 'documents'} onClick={() => setActiveScreen('documents')} />
