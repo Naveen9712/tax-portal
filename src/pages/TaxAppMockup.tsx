@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle, Calendar, Bell } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle, Calendar, Bell, Camera, Upload } from 'lucide-react';
 
 // Tax Planning Journey Component
 const TaxPlanningJourney = () => {
@@ -191,6 +191,7 @@ interface ChatMessage {
   id: number;
   text: string;
   sender: 'user' | 'bot';
+  image?: string;
 }
 
 interface HomeScreenProps {
@@ -319,6 +320,8 @@ const HomeScreen: React.FC<HomeScreenProps & { onBack?: () => void }> = ({ setAc
 const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNewMessage, setChatMessages }) => {
   const [showLifeEvents, setShowLifeEvents] = useState(false);
   const [showIncomeOptions, setShowIncomeOptions] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const lifeEvents = [
     "New job opportunity",
@@ -342,93 +345,211 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
     "Content creation"
   ];
 
-  const handleSendMessage = () => {
+  // Gemini AI API call function
+  const callGeminiAI = async (message: string, imageData?: string) => {
+    try {
+      const apiKey = 'AIzaSyAaAVH1P5vHbjHWRFZm3rOWYTUU1FngycE'; // Placeholder API key
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+      
+      let parts: any[] = [{ text: message }];
+      
+      // Add image data if provided
+      if (imageData) {
+        parts.push({
+          inline_data: {
+            mime_type: "image/jpeg",
+            data: imageData.split(',')[1] // Remove data:image/jpeg;base64, prefix
+          }
+        });
+      }
+
+      const requestBody = {
+        contents: [{
+          parts: parts
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        }
+      };
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.candidates[0].content.parts[0].text;
+    } catch (error) {
+      console.error('Error calling Gemini AI:', error);
+      return "I'm sorry, I'm having trouble connecting right now. Please try again later.";
+    }
+  };
+
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
     
+    setIsLoading(true);
     const newId = chatMessages.length + 1;
     setChatMessages((prev: ChatMessage[]) => [
       ...prev,
       { id: newId, text: newMessage, sender: 'user' }
     ]);
+    
+    const userMessage = newMessage;
     setNewMessage('');
     
-    // Simulate bot response
-    setTimeout(() => {
+    try {
+      // Create context-aware message for Gemini AI
+      const contextMessage = `You are a helpful tax assistant helping Michael Chen, a 30-year-old single person living in Texas with an annual salary of $95,000. His monthly expenses include rent ($1,500), car payment ($500), education loan ($400), personal loan ($350), health insurance ($300), car insurance ($200), internet ($85), and mobile ($30). His tax withholdings are $1,650/month. Please provide helpful, personalized tax advice based on this context. User message: ${userMessage}`;
+      
+      const response = await callGeminiAI(contextMessage);
+      
       setChatMessages((prev: ChatMessage[]) => [
         ...prev,
         { 
           id: prev.length + 1, 
-          text: "I've noted this information. Let me analyze potential tax implications and suggest strategies. Would you like me to help you set a reminder for relevant document collection?", 
+          text: response, 
           sender: 'bot' 
         }
       ]);
-    }, 1000);
+    } catch (error) {
+      setChatMessages((prev: ChatMessage[]) => [
+        ...prev,
+        { 
+          id: prev.length + 1, 
+          text: "I'm sorry, I encountered an error. Please try again.", 
+          sender: 'bot' 
+        }
+      ]);
+    }
+    
+    setIsLoading(false);
   };
 
-  const handleLifeEventSelect = (event: string) => {
+  const handleLifeEventSelect = async (event: string) => {
     setChatMessages([
       ...chatMessages,
       { id: chatMessages.length + 1, text: `I'm considering: ${event}`, sender: 'user' }
     ]);
     
     setShowLifeEvents(false);
+    setIsLoading(true);
     
-    // Simulate bot response
-    setTimeout(() => {
-      let response = "";
+    try {
+      const contextMessage = `You are a helpful tax assistant helping Michael Chen, a 30-year-old single person living in Texas with an annual salary of $95,000. His monthly expenses include rent ($1,500), car payment ($500), education loan ($400), personal loan ($350), health insurance ($300), car insurance ($200), internet ($85), and mobile ($30). His tax withholdings are $1,650/month. The user is considering this life event: ${event}. Please provide specific, personalized tax advice for this situation, including potential deductions, credits, and strategies.`;
       
-      switch(event) {
-        case "New job opportunity":
-          response = "A job change could have several tax implications. If your salary increases, you may move to a higher tax bracket. You should check if your new employer's W-4 withholding is appropriate. Also, remember that unused FSA funds might be forfeited when changing jobs, so plan accordingly. Would you like me to help you set up a tax planning strategy for this potential income?";
-          break;
-        case "Planning for graduate school":
-          response = "Graduate education expenses may qualify for tax benefits! The Lifetime Learning Credit could reduce your tax bill by up to $2,000 (20% of the first $10,000 in expenses). Student loan interest remains tax-deductible up to $2,500, and employer tuition assistance may be tax-free up to $5,250. Would you like me to estimate potential tax savings based on your expected education costs?";
-          break;
-        case "Planning a home purchase":
-          response = "Buying a home introduces several tax considerations. As a first-time homebuyer, you might qualify for special programs. Once you own, mortgage interest and property taxes may be deductible if you itemize. Given your $95,000 income and current expenses, I'd recommend saving relevant documentation and possibly adjusting your withholding. Want me to run some numbers on how homeownership might affect your tax situation?";
-          break;
-        default:
-          response = "This life event could have tax implications. Let me analyze this further based on your specific financial situation. Would you like me to provide a detailed breakdown of potential tax impacts and strategies?";
-      }
+      const response = await callGeminiAI(contextMessage);
       
       setChatMessages((prev: ChatMessage[]) => [
         ...prev,
         { id: prev.length + 1, text: response, sender: 'bot' }
       ]);
-    }, 1000);
+    } catch (error) {
+      setChatMessages((prev: ChatMessage[]) => [
+        ...prev,
+        { id: prev.length + 1, text: "I'm sorry, I encountered an error. Please try again.", sender: 'bot' }
+      ]);
+    }
+    
+    setIsLoading(false);
   };
 
-  const handleIncomeOptionSelect = (option: string) => {
+  const handleIncomeOptionSelect = async (option: string) => {
     setChatMessages([
       ...chatMessages,
       { id: chatMessages.length + 1, text: `I'm planning to earn income through: ${option}`, sender: 'user' }
     ]);
     
     setShowIncomeOptions(false);
+    setIsLoading(true);
     
-    // Simulate bot response
-    setTimeout(() => {
-      let response = "";
+    try {
+      const contextMessage = `You are a helpful tax assistant helping Michael Chen, a 30-year-old single person living in Texas with an annual salary of $95,000. His monthly expenses include rent ($1,500), car payment ($500), education loan ($400), personal loan ($350), health insurance ($300), car insurance ($200), internet ($85), and mobile ($30). His tax withholdings are $1,650/month. The user is planning to earn additional income through: ${option}. Please provide specific, personalized tax advice for this additional income source, including tax implications, estimated tax rates, deductions, and quarterly payment requirements.`;
       
-      switch(option) {
-        case "Freelance work":
-          response = "Freelance work is considered self-employment income, which has specific tax requirements. You'll likely need to pay quarterly estimated taxes and self-employment tax (15.3% for Social Security and Medicare). However, you can deduct business expenses like home office, software, equipment, and professional development. Based on your current $95,000 salary, additional income could push you into a higher tax bracket. Would you like me to help you set up a tax planning strategy for your freelance work?";
-          break;
-        case "Investment dividends":
-          response = "Investment dividends are typically taxed at special capital gains rates, which are lower than ordinary income rates. Qualified dividends are taxed at 0%, 15%, or 20% depending on your income level. With your $95,000 salary, you'd likely be in the 15% bracket for qualified dividends. I recommend keeping detailed records of all investment transactions for tax reporting. Would you like me to help you understand how dividend income might impact your overall tax situation?";
-          break;
-        case "Rental income":
-          response = "Rental income offers both tax obligations and advantages. The income is taxable, but you can deduct expenses like mortgage interest, property taxes, insurance, maintenance, and depreciation. Given your current financial profile, adding rental income could affect your tax bracket, but the deductions often offset much of the taxable amount. Should I create a detailed tax projection for a potential rental property based on your situation?";
-          break;
-        default:
-          response = "This additional income source will have specific tax implications. Based on your current $95,000 salary and expenses, I can help you plan for the tax impact. Would you like me to create a tax estimate showing how this additional income might affect your tax situation?";
-      }
+      const response = await callGeminiAI(contextMessage);
       
       setChatMessages((prev: ChatMessage[]) => [
         ...prev,
         { id: prev.length + 1, text: response, sender: 'bot' }
       ]);
-    }, 1000);
+    } catch (error) {
+      setChatMessages((prev: ChatMessage[]) => [
+        ...prev,
+        { id: prev.length + 1, text: "I'm sorry, I encountered an error. Please try again.", sender: 'bot' }
+      ]);
+    }
+    
+    setIsLoading(false);
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    // Check if file is an image
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file.');
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const imageData = e.target?.result as string;
+      
+      setIsLoading(true);
+      setChatMessages((prev: ChatMessage[]) => [
+        ...prev,
+        { 
+          id: prev.length + 1, 
+          text: "I've uploaded a receipt/document for analysis", 
+          sender: 'user',
+          image: imageData
+        }
+      ]);
+      
+      try {
+        const contextMessage = `You are a helpful tax assistant. The user has uploaded a receipt or document image. Please analyze this image and extract relevant tax information such as business expenses, medical expenses, charitable donations, or other tax-deductible items. Provide specific advice on how this expense can be used for tax purposes, what documentation to keep, and any relevant tax forms or schedules. Also mention the amount, date, vendor, and category of expense if visible.`;
+        
+        const response = await callGeminiAI(contextMessage, imageData);
+        
+        setChatMessages((prev: ChatMessage[]) => [
+          ...prev,
+          { 
+            id: prev.length + 1, 
+            text: response, 
+            sender: 'bot' 
+          }
+        ]);
+      } catch (error) {
+        setChatMessages((prev: ChatMessage[]) => [
+          ...prev,
+          { 
+            id: prev.length + 1, 
+            text: "I'm sorry, I couldn't analyze the image. Please try again.", 
+            sender: 'bot' 
+          }
+        ]);
+      }
+      
+      setIsLoading(false);
+    };
+    
+    reader.readAsDataURL(file);
+    
+    // Reset the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -448,9 +569,21 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
                   : 'mr-auto bg-gray-200 text-gray-800'
               }`}
             >
+              {msg.image && (
+                <img 
+                  src={msg.image} 
+                  alt="Uploaded receipt" 
+                  className="w-full h-32 object-cover rounded mb-2"
+                />
+              )}
               <div className="whitespace-pre-wrap text-sm">{msg.text}</div>
             </div>
           ))}
+          {isLoading && (
+            <div className="mr-auto bg-gray-200 text-gray-800 rounded-lg p-3 mb-3 max-w-xs">
+              <div className="text-sm">Thinking...</div>
+            </div>
+          )}
         </div>
       </div>
       
@@ -507,13 +640,15 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
               placeholder="Message your tax assistant..."
               className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
+              disabled={isLoading}
             />
             <button 
               onClick={handleSendMessage}
-              className="bg-blue-600 w-10 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+              disabled={isLoading}
+              className="bg-blue-600 w-10 text-white p-2 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               <MessageCircle size={18} />
             </button>
@@ -522,19 +657,33 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatMessages, newMessage, setNe
             <button 
               className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition-colors"
               onClick={() => setShowIncomeOptions(true)}
+              disabled={isLoading}
             >
               New income
             </button>
             <button 
               className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition-colors"
               onClick={() => setShowLifeEvents(true)}
+              disabled={isLoading}
             >
               Life event
             </button>
-            <button className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition-colors">
+            <button 
+              className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition-colors flex items-center"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading}
+            >
+              <Upload size={14} className="mr-1" />
               Upload receipt
             </button>
           </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImageUpload}
+            accept="image/*"
+            className="hidden"
+          />
         </div>
       )}
     </div>
@@ -813,9 +962,7 @@ const ProfileScreen: React.FC = () => (
 const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
   const [activeScreen, setActiveScreen] = useState('home');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    { id: 1, text: "Hi Michael! I'm your personal tax assistant. How can I help you today?", sender: 'bot' },
-    { id: 2, text: "I'm thinking of starting some freelance work on weekends for extra income. Would that affect my taxes?", sender: 'user' },
-    { id: 3, text: "Great question! Freelance income is considered self-employment income, which has some important tax implications:\n\n1. You'll need to pay self-employment tax (15.3%) to cover Social Security and Medicare\n2. You may need to make quarterly estimated tax payments\n3. You can deduct business expenses to reduce your taxable income\n\nWith your current $95,000 salary, additional income could push you into a higher tax bracket. I recommend tracking all business expenses carefully. Would you like me to help you set up a tax planning strategy for this potential income?", sender: 'bot' }
+    { id: 1, text: "Hi Michael! I'm your personal tax assistant powered by Gemini AI. I can help you with tax planning, analyze receipts, and answer questions about your specific financial situation. How can I help you today?", sender: 'bot' }
   ]);
   const [newMessage, setNewMessage] = useState('');
 
