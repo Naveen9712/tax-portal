@@ -663,7 +663,7 @@ const TaxAppMockup: React.FC<TaxAppMockupProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 w-full max-w-md border mx-auto">
+    <div className="flex flex-col h-screen bg-gray-100 w-full max-w-sm border mx-auto">
       {/* Main content */}
       <div className="flex-1 overflow-y-auto">
         {renderScreen()}
