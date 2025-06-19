@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle, Calendar, Bell, PlayCircle } from 'lucide-react';
+import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle, Calendar, Bell } from 'lucide-react';
 
 // Tax Planning Journey Component
 const TaxPlanningJourney = () => {
