@@ -602,7 +602,7 @@ const TaxProfileQuestionnaire: React.FC<{
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 max-w-dm mx-auto">
+    <div className="flex flex-col h-screen bg-gray-50 max-w-md mx-auto">
       <div className="bg-white p-4 shadow-sm border-b">
         <div className="flex items-center justify-between">
           <button onClick={onBack} className="text-gray-600">
