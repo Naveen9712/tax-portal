@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, DollarSign, AlertCircle, Calendar, Bell, Camera, Upload, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Home, MessageCircle, FileText, Gift, User, Plus, ChevronRight, Search, AlertCircle, Calendar, Bell, Upload, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
 // User Profile Interface
 interface UserProfile {
@@ -242,13 +242,17 @@ const SignupScreen: React.FC<{ onNext: (email: string, password: string) => void
   );
 };
 
+// Helper to ensure we only spread plain objects
+function ensurePlainObject(val: any): Record<string, any> {
+  return (val && typeof val === 'object' && !Array.isArray(val)) ? val : {};
+}
+
 // Tax Profile Questionnaire Component
 const TaxProfileQuestionnaire: React.FC<{ 
   email: string; 
-  password: string; 
   onComplete: (profile: UserProfile) => void;
   onBack: () => void;
-}> = ({ email, password, onComplete, onBack }) => {
+}> = ({ email, onComplete, onBack }): React.ReactElement => {
   const [step, setStep] = useState(1);
   const [profile, setProfile] = useState<UserProfile>({
     personalInfo: {
@@ -294,26 +298,29 @@ const TaxProfileQuestionnaire: React.FC<{
   });
 
   const updateProfile = (section: keyof UserProfile, field: string, value: any) => {
-    setProfile(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value
-      }
-    }));
+    setProfile(prev => {
+      const sectionValue = ensurePlainObject(prev[section]);
+      return {
+        ...prev,
+        [section]: {
+          ...sectionValue,
+          [field]: value
+        }
+      };
+    });
   };
 
   const toggleArrayItem = (section: keyof UserProfile, field: string, item: string) => {
     setProfile(prev => {
-      const currentArray = (prev[section] as any)[field] as string[];
+      const sectionValue = ensurePlainObject(prev[section]);
+      const currentArray = (sectionValue as any)[field] as string[] || [];
       const updatedArray = currentArray.includes(item)
-        ? currentArray.filter(i => i !== item)
+        ? currentArray.filter((i: string) => i !== item)
         : [...currentArray, item];
-      
       return {
         ...prev,
         [section]: {
-          ...prev[section],
+          ...sectionValue,
           [field]: updatedArray
         }
       };
@@ -844,7 +851,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ setActiveScreen, userProfile })
     Generate exactly 3 personalized tax insights or action items. Each should be specific to their situation and actionable. Format each insight as: "Title|Description" separated by pipe character.`;
 
     const response = await callGeminiAI(prompt);
-    const parsedInsights = response.split('\n').filter(line => line.includes('|')).slice(0, 3);
+    const parsedInsights = response.split('\n').filter((line: string) => line.includes('|')).slice(0, 3);
     setInsights(parsedInsights);
     setIsLoading(false);
   };
@@ -1391,9 +1398,9 @@ const DocumentsScreen: React.FC<{ userProfile: UserProfile }> = ({ userProfile }
 
     const response = await callGeminiAI(prompt);
     const parsedDocs = response.split('\n')
-      .filter(line => line.includes('|'))
+      .filter((line: string) => line.includes('|'))
       .slice(0, 8)
-      .map((line, index) => {
+      .map((line: string, index: number) => {
         const [name, description, priority] = line.split('|');
         return {
           id: index + 1,
@@ -1497,9 +1504,9 @@ const LifeEventsScreen: React.FC<{ userProfile: UserProfile }> = ({ userProfile 
 
     const response = await callGeminiAI(prompt);
     const parsedEvents = response.split('\n')
-      .filter(line => line.includes('|'))
+      .filter((line: string) => line.includes('|'))
       .slice(0, 4)
-      .map((line, index) => {
+      .map((line: string, index: number) => {
         const [name, impact, timeline, priority] = line.split('|');
         return {
           id: index + 1,
@@ -1711,7 +1718,6 @@ const ProfileScreen: React.FC<{ userProfile: UserProfile; onLogout: () => void }
   </div>
 );
 
-// Main App Component
 const TaxAppMockup: React.FC = () => {
   const [appState, setAppState] = useState<'login' | 'signup' | 'questionnaire' | 'app'>('login');
   const [activeScreen, setActiveScreen] = useState('home');
@@ -1837,7 +1843,6 @@ const TaxAppMockup: React.FC = () => {
     return (
       <TaxProfileQuestionnaire 
         email={tempCredentials.email}
-        password={tempCredentials.password}
         onComplete={handleQuestionnaireComplete}
         onBack={() => setAppState('signup')}
       />

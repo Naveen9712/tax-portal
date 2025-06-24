@@ -25,7 +25,7 @@ const App: React.FC = () => {
     case 'business':
       return <TrickyTaxPortal onBack={handleBackToDashboard} />;
     case 'personal':
-      return <TaxAppMockup onBack={handleBackToDashboard} />;
+      return <TaxAppMockup />;
     default:
       return (
         <DashboardSelectionPage 
